@@ -4,18 +4,19 @@
     text: msg,
     position: 'top-right'
   })
-}*/
+}
 
 function messageToServer(msg){
   window.socket.emit('message-to-server', {message: msg})
-}
+}*/
 
 function initToast(player) {
   var msg = 'your are: ' + player;
   $.toast({
     text : msg,
-    position : "top-right",
-    icon: 'success'
+    position : "bottom-right",
+    icon: 'success',
+    hideAfter: false
   })
 }
 
@@ -26,6 +27,10 @@ function playerAddedToast(player) {
     position : "bottom-right",
     icon: 'info'
   })
+}
+
+function playGame(){
+  window.socket.emit("play");
 }
 
 window.socket = null
@@ -46,7 +51,7 @@ function connectToSocketIo(){
     }*/
   });
 
-  window.socket.on('Player added', function(data) {
+  window.socket.on('player added', function(data) {
     var players = data.player_names;
     var last_player = players[players.length - 1];
     playerAddedToast(last_player);
@@ -54,6 +59,11 @@ function connectToSocketIo(){
       updateCards(data.players);
     }*/
   });
+
+  window.socket.on('play', function (data) {
+    console.log('play');
+    //prepareGame(data.letter);
+  })
 }
 
 

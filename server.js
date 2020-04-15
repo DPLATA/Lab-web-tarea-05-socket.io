@@ -8,6 +8,8 @@ let session = require('express-session');
 let flash = require('express-flash');
 let passport = require('passport');
 
+const axios = require('axios');
+
 // Express app creation
 const app = express();
 
@@ -54,10 +56,10 @@ app.use(express.urlencoded({ extended: true }))
 app.use('/', express.static(__dirname + '/public'))
 app.use('/', webRoutes);
 
-const axios = require('axios');
+let player_names = []
+let sockets_connected = []
+let letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
 
-player_names = []
-sockets_connected = []
 
 io.on('connection', (socket) => {
   //console.log('client connected');
@@ -68,7 +70,14 @@ io.on('connection', (socket) => {
       player_names.push(player);
       sockets_connected.push(socket);
       socket.emit('init', {player : player, player_names : player_names});
-      socket.broadcast.emit('Player added', {player_names : player_names});
+      socket.broadcast.emit('player added', {player_names : player_names});
+    });
+
+    socket.on('play', () => {
+    letter = letters[Math.floor((Math.random() * 26))];
+    console.log(letter);
+    socket.emit('play', {letter : letter});
+    socket.broadcast.emit('play', {letter : letter});
     });
 
   /*socket.on('message-to-server', (data) =>{
