@@ -63,12 +63,12 @@ io.on('connection', (socket) => {
   //console.log('client connected');
   axios.get("http://names.drycodes.com/1?nameOptions=starwarsFirstNames")
   .then((response) => {
-    console.log("axios response: ", response.data);
+    //console.log("axios response: ", response.data);
     var player = response.data[0];
       player_names.push(player);
       sockets_connected.push(socket);
-      socket.emit('welcome', {player : player, player_names : player_names});
-      socket.broadcast.emit('Player added: ', {player_names : player_names});
+      socket.emit('init', {player : player, player_names : player_names});
+      socket.broadcast.emit('Player added', {player_names : player_names});
     });
 
   /*socket.on('message-to-server', (data) =>{

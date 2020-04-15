@@ -15,6 +15,16 @@ function initToast(player) {
   $.toast({
     text : msg,
     position : "top-right",
+    icon: 'success'
+  })
+}
+
+function playerAddedToast(player) {
+  var msg = player + " now playing";
+  $.toast({
+    text : msg,
+    position : "bottom-right",
+    icon: 'info'
   })
 }
 
@@ -23,7 +33,7 @@ function connectToSocketIo(){
   let server = window.location.protocol + '//' + window.location.host
   window.socket = io.connect(server)
 
-  window.socket.on('welcome', function(data) {
+  window.socket.on('init', function(data) {
     player = data.player;
     //$("#user").text(player);
     initToast(player);
@@ -39,7 +49,7 @@ function connectToSocketIo(){
   window.socket.on('Player added', function(data) {
     var players = data.player_names;
     var last_player = players[players.length - 1];
-    newPlayerToast(newPlayer);
+    playerAddedToast(last_player);
     /*if(pregameScreenOn){
       updateCards(data.players);
     }*/
