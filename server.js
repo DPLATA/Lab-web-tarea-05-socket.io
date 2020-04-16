@@ -57,67 +57,33 @@ app.use('/', express.static(__dirname + '/public'))
 app.use('/', webRoutes);
 
 let player_names = []
-let sockets_connected = []
+//let sockets_connected = []
 let letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
 
 
 io.on('connection', (socket) => {
-  //console.log('client connected');
   axios.get("http://names.drycodes.com/1?nameOptions=starwarsFirstNames")
   .then((response) => {
     //console.log("axios response: ", response.data);
     var player = response.data[0];
       player_names.push(player);
-      sockets_connected.push(socket);
+      //sockets_connected.push(socket);
       socket.emit('init', {player : player, player_names : player_names});
       socket.broadcast.emit('player added', {player_names : player_names});
     });
 
     socket.on('play', () => {
-    letter = letters[Math.floor((Math.random() * 26))];
-    console.log(letter);
-    socket.emit('play', {letter : letter});
-    socket.broadcast.emit('play', {letter : letter});
+      letter = letters[Math.floor((Math.random() * 26))];
+      socket.emit('play', {letter : letter});
+      socket.broadcast.emit('play', {letter : letter});
     });
 
-  /*socket.on('message-to-server', (data) =>{
-    console.log('message received', data);
-  })*/
+    socket.on('finish', () => {
+      socket.emit('gradeAnswers');
+      socket.broadcast.emit('gradeAnswers');
+    })
+
 })
-
-
-
-
-
-
-/*io.on('connection', (socket) => {
-    .then((response) => {
-      var newPlayer = response.data[0];
-      players.push(newPlayer);
-      sockets.push(socket);
-      socket.emit('welcome', {name : newPlayer, players : players, gameRunning : gameRunning, letter : letter});
-      socket.broadcast.emit('newPlayer', {players : players});
-    });
-    let i = 0;
-  socket.on('startGame', () => {
-    letter = alphabet[Math.floor((Math.random() * 26))];
-    gameRunning = true;
-    socket.emit('startGame', {letter : letter});
-    socket.broadcast.emit('startGame', {letter : letter});
-  });
-  socket.on('stopGame', () => {
-    gameRunning = false;
-    socket.emit('stopGame');
-    socket.broadcast.emit('stopGame');
-  })
-  socket.on('disconnect', () => {
-    var i = sockets.indexOf(socket);
-    var disconnectedPlayer = players[i];
-    players.splice(i,1);
-    sockets.splice(i, 1);
-    socket.broadcast.emit('playerDisconnect', {name : disconnectedPlayer, players : players});
-  });
-})*/
 
 // App init
 server.listen(appConfig.expressPort, () => {

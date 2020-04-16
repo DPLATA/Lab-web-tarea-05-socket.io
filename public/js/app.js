@@ -1,15 +1,3 @@
-/*function showToast(msg){
-  console.log('el mensaje es ', msg);
-  $.toast({
-    text: msg,
-    position: 'top-right'
-  })
-}
-
-function messageToServer(msg){
-  window.socket.emit('message-to-server', {message: msg})
-}*/
-
 function initToast(player) {
   var msg = 'your are: ' + player;
   $.toast({
@@ -29,8 +17,43 @@ function playerAddedToast(player) {
   })
 }
 
+function sendLetter(letter){
+  var letter = letter;
+  $("#letter").text(letter);
+  $("#startButton").hide();
+  $("#gameForm").show();
+  $("#bastaButton").show();
+}
+
 function playGame(){
+  $("input[type='text']").prop("disabled", false);
+  $("input[type='text']").removeClass('is-valid is-invalid')
+  $("input[type='text']").val('')
+  $("#bastaButton").show();
+  $("#playAgainButton").hide();
   window.socket.emit("play");
+}
+
+function bastaGame(){
+  window.socket.emit("finish")
+}
+
+function gradingAnswers(){
+  $("input[type='text']").prop("disabled", true);
+
+  if($("#name").val() !== ""){
+    $("#name").addClass("is-valid");
+  } else { $("#name").addClass("is-invalid"); }
+  if($("#color").val() !== ""){
+    $("#color").addClass("is-valid");
+  } else { $("#color").addClass("is-invalid"); }
+  if($("#animal").val() !== ""){
+    $("#animal").addClass("is-valid");
+  } else { $("#animal").addClass("is-invalid"); }
+  if($("#flowerFruit").val() !== ""){
+    $("#flowerFruit").addClass("is-valid");
+  } else { $("#flowerFruit").addClass("is-invalid"); }
+
 }
 
 window.socket = null
@@ -40,29 +63,23 @@ function connectToSocketIo(){
 
   window.socket.on('init', function(data) {
     player = data.player;
-    //$("#user").text(player);
     initToast(player);
-    /*if(data.gameRunning){
-      prepareGame(data.letter);
-      pregameScreenOn = false;
-    } else {
-      updateCards(data.players);
-      pregameScreenOn = true;
-    }*/
   });
 
   window.socket.on('player added', function(data) {
     var players = data.player_names;
     var last_player = players[players.length - 1];
     playerAddedToast(last_player);
-    /*if(pregameScreenOn){
-      updateCards(data.players);
-    }*/
   });
 
   window.socket.on('play', function (data) {
-    console.log('play');
-    //prepareGame(data.letter);
+    sendLetter(data.letter);
+  })
+
+  window.socket.on('gradeAnswers', function (data) {
+    gradingAnswers();
+    $("#bastaButton").hide();
+    $("#playAgainButton").show();
   })
 }
 

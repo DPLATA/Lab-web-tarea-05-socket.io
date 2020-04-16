@@ -1,7 +1,41 @@
 <main role="main" class="container">
-  <div class="row">
+  <div class="row" id="startButton">
     <div class="col-12">
-      <input class="btn btn-outline-info btn-lg btn-block" type="button" value="PLAY GAME " onclick="playGame()">
+      <input class="btn btn-outline-info btn-lg btn-block" type="button" value="JUGAR " onclick="playGame()">
     </div>
   </div>
+
+  <div id="gameForm" style="display: none">
+    <div class="row">
+      <div class="col">
+        <h4 class="display-4 text-center" id="letter"></h4>
+        <br>
+      </div>
+    </div>
+    <form>
+      <div class="form-group row">
+        <div class="col-3">
+          <input type="text" class="form-control" id="name" placeholder="nombre">
+        </div>
+        <div class="col-3">
+          <input type="text" class="form-control" id="color" placeholder="color">
+        </div>
+        <div class="col-3">
+          <input type="text" class="form-control" id="animal" placeholder="animal">
+        </div>
+        <div class="col-3">
+          <input type="text" class="form-control" id="flowerFruit" placeholder="flor o fruto">
+        </div>
+      </div>
+    </form>
+    <div class="row">
+      <div class="col-5"></div>
+      <div class="col-2">
+        <button id="bastaButton" class="btn btn-outline-danger btn-block" onclick="bastaGame()">Basta</button>
+        <button id="playAgainButton" class="btn btn-outline-secondary btn-block" onclick="playGame()" style="display:none;">Jugar de nuevo</button>
+      </div>
+      <div class="col-5"></div>
+    </div>
+  </div>
+
 </main>
